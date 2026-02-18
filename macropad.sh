@@ -44,8 +44,8 @@ vitaly -i 5633 macros -n 8 -v 'Tap(LCTL(KC_U)); Delay(20); Tap(KC_MINS); Delay(2
 
 # Bind left encoder (0): horizontal resize
 vitaly -i 5633 encoders -l 0 -p 0,1 -v M5   # CW  → C-x }
-vitaly -i 5633 encoders -l 0 -p 0,2 -v M6   # CCW → C-x {
+vitaly -i 5633 encoders -l 0 -p 0,0 -v M6   # CCW → C-x {
 
 # Bind right encoder (2): vertical resize
 vitaly -i 5633 encoders -l 0 -p 2,1 -v M7   # CW  → C-x ^
-vitaly -i 5633 encoders -l 0 -p 2,2 -v M8   # CCW → C-u - C-x ^
+vitaly -i 5633 encoders -l 0 -p 2,0 -v M8   # CCW → C-u - C-x ^

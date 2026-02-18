@@ -14,7 +14,7 @@ Configuration scripts for the DOIO KB16 rev2 macropad (16 keys, 3 encoder knobs)
 - **Layer 0** is the only layer in use
 - **Keys**: 4 columns x 4 rows (positions `row,col` from `0,0` to `3,3`)
 - **Encoders**: 3 knobs — left (0), middle (1), right (2)
-  - Direction 1 = clockwise (CW), direction 2 = counter-clockwise (CCW)
+  - Direction 0 = counter-clockwise (CCW), direction 1 = clockwise (CW)
 - **Macros**: 
 
 ## Files
