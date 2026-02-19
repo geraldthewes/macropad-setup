@@ -28,6 +28,23 @@ vitaly -i 5633 keys -l 0 -p 1,1 -v 'M2'
 vitaly -i 5633 keys -l 0 -p 1,2 -v 'M3'
 vitaly -i 5633 keys -l 0 -p 1,3 -v 'M4'
 
+# ── Row 2: Emacs split management & eat terminal ──
+
+# Macro 9: C-x 0 (delete-window — close current split)
+vitaly -i 5633 macros -n 9 -v 'Tap(LCTL(KC_X)); Delay(20); Tap(KC_0)'
+
+# Macro 10: C-c C-e (eat: switch to emacs mode)
+vitaly -i 5633 macros -n 10 -v 'Tap(LCTL(KC_C)); Delay(20); Tap(LCTL(KC_E))'
+
+# Macro 11: C-c C-j (eat: return to semi-char mode)
+vitaly -i 5633 macros -n 11 -v 'Tap(LCTL(KC_C)); Delay(20); Tap(LCTL(KC_J))'
+
+# Bind row 2 keys
+vitaly -i 5633 keys -l 0 -p 2,0 -v 'M9'
+vitaly -i 5633 keys -l 0 -p 2,1 -v 'LCTL(KC_Q)'
+vitaly -i 5633 keys -l 0 -p 2,2 -v 'M10'
+vitaly -i 5633 keys -l 0 -p 2,3 -v 'M11'
+
 # ── Encoder knobs: Emacs window resizing ──
 
 # Macro 5: C-x } (enlarge-window-horizontally)
