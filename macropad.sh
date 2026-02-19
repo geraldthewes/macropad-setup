@@ -46,6 +46,10 @@ vitaly -i 5633 macros -n 8 -v 'Tap(LCTL(KC_U)); Delay(20); Tap(KC_MINS); Delay(2
 vitaly -i 5633 encoders -l 0 -p 0,1 -v M5   # CW  → C-x }
 vitaly -i 5633 encoders -l 0 -p 0,0 -v M6   # CCW → C-x {
 
-# Bind right encoder (2): vertical resize
-vitaly -i 5633 encoders -l 0 -p 2,1 -v M7   # CW  → C-x ^
-vitaly -i 5633 encoders -l 0 -p 2,0 -v M8   # CCW → C-u - C-x ^
+# Bind top-right encoder (1): vertical resize
+vitaly -i 5633 encoders -l 0 -p 1,1 -v M7   # CW  → C-x ^
+vitaly -i 5633 encoders -l 0 -p 1,0 -v M8   # CCW → C-u - C-x ^
+
+# Bind bottom encoder (2): scroll
+vitaly -i 5633 encoders -l 0 -p 2,1 -v KC_WH_U   # CW  → scroll up
+vitaly -i 5633 encoders -l 0 -p 2,0 -v KC_WH_D   # CCW → scroll down
