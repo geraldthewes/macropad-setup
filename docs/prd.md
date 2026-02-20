@@ -1,3 +1,5 @@
+> **Specification**: See [specification.md](./specification.md) for the formal DSL v1.0 schema.
+
 **Key Points**  
 - No dedicated DSL exists specifically for Vitaly/Vial macropad configuration, but YAML-based keymap formats are the established standard in the keyboard community (used by ZMK firmware, keymap-drawer for QMK/Vial visualization, and Vial-to-keymap converters).  
 - The proposed DSL is a clean, human-readable YAML file (`macropad-config.yaml`) where every key includes its QMK/Vitaly keycode **and** a plain-English description (perfect for your Emacs bindings).  
