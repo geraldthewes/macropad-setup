@@ -1,0 +1,127 @@
+# Blank macropad configuration template
+name: "New Configuration"
+device_id: 5633
+
+# Macro definitions (optional)
+# Actions types: tap, delay, down, up
+macros:
+  - id: 0  # Optional: explicit slot assignment
+    description: "Description of what this macro does"
+    actions:
+      - type: tap
+        keycode: KC_ESC
+      - type: delay
+        ms: 20
+      # - type: down
+      #   keycode: KC_LCTL
+      # - type: up
+      #   keycode: KC_LCTL
+
+# Layer configuration
+layers:
+  - index: 0
+    name: "Main"
+
+    # 4x4 key grid (row 0-3, col 0-3)
+    keys:
+      # Row 0
+      - row: 0
+        col: 0
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 0
+        col: 1
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 0
+        col: 2
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 0
+        col: 3
+        value: "KC_NO"
+        description: "Description"
+
+      # Row 1
+      - row: 1
+        col: 0
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 1
+        col: 1
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 1
+        col: 2
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 1
+        col: 3
+        value: "KC_NO"
+        description: "Description"
+
+      # Row 2
+      - row: 2
+        col: 0
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 2
+        col: 1
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 2
+        col: 2
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 2
+        col: 3
+        value: "KC_NO"
+        description: "Description"
+
+      # Row 3
+      - row: 3
+        col: 0
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 3
+        col: 1
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 3
+        col: 2
+        value: "KC_NO"
+        description: "Description"
+
+      - row: 3
+        col: 3
+        value: "KC_NO"
+        description: "Description"
+
+    # 3 encoders: 0 (left), 1 (middle), 2 (right)
+    # Each has cw (clockwise) and ccw (counter-clockwise) actions
+    encoders:
+      - encoder: 0
+        description: "Left encoder"
+        cw: "KC_NO"
+        ccw: "KC_NO"
+
+      - encoder: 1
+        description: "Middle encoder"
+        cw: "KC_NO"
+        ccw: "KC_NO"
+
+      - encoder: 2
+        description: "Right encoder"
+        cw: "KC_NO"
+        ccw: "KC_NO"

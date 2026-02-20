@@ -1,0 +1,237 @@
+# Macropad configuration matching current macropad.sh
+name: "Emacs Workflow"
+device_id: 5633
+
+# Macro definitions
+macros:
+  - id: 0
+    description: "ESC then W (Emacs copy)"
+    actions:
+      - type: tap
+        keycode: KC_ESC
+      - type: tap
+        keycode: KC_W
+
+  - id: 1
+    description: "C-x 3 (split-window-right — vertical split)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_3
+
+  - id: 2
+    description: "C-x 2 (split-window-below — horizontal split)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_2
+
+  - id: 3
+    description: "C-x t 2 (tab-bar new tab)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_T
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_2
+
+  - id: 4
+    description: "C-x t 0 (tab-bar close tab)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_T
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_0
+
+  - id: 5
+    description: "C-x } (enlarge-window-horizontally)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LSFT(KC_RBRC)
+
+  - id: 6
+    description: "C-x { (shrink-window-horizontally)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LSFT(KC_LBRC)
+
+  - id: 7
+    description: "C-x ^ (enlarge-window)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LSFT(KC_6)
+
+  - id: 8
+    description: "C-u - C-x ^ (shrink-window)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_U)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_MINS
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LSFT(KC_6)
+
+  - id: 9
+    description: "C-x 0 (delete-window — close current split)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_0
+
+  - id: 10
+    description: "C-c C-e (eat: switch to emacs mode)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_C)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LCTL(KC_E)
+
+  - id: 11
+    description: "C-c C-j (eat: return to semi-char mode)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_C)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LCTL(KC_J)
+
+# Layer configuration
+layers:
+  - index: 0
+    name: "Main"
+
+    # All keys in a single list (YAML limitation: only one `keys:` per layer)
+    keys:
+      # Row 0: Copy/Paste/Macro/Yank
+      - row: 0
+        col: 0
+        value: "LCTL(LSFT(KC_C))"
+        description: "Copy with shift (visual select + copy)"
+
+      - row: 0
+        col: 1
+        value: "LCTL(LSFT(KC_V))"
+        description: "Paste (visual paste)"
+
+      - row: 0
+        col: 2
+        value: "M0"
+        description: "ESC then W (Emacs copy)"
+
+      - row: 0
+        col: 3
+        value: "LCTL(KC_Y)"
+        description: "Yank (redo after paste)"
+
+      # Row 1: Emacs window/tab management
+      - row: 1
+        col: 0
+        value: "M1"
+        description: "Split vertical (C-x 3)"
+
+      - row: 1
+        col: 1
+        value: "M2"
+        description: "Split horizontal (C-x 2)"
+
+      - row: 1
+        col: 2
+        value: "M3"
+        description: "New tab (C-x t 2)"
+
+      - row: 1
+        col: 3
+        value: "M4"
+        description: "Close tab (C-x t 0)"
+
+      # Row 2: Emacs split management & eat terminal
+      - row: 2
+        col: 0
+        value: "M9"
+        description: "Close split (C-x 0)"
+
+      - row: 2
+        col: 1
+        value: "LCTL(KC_Q)"
+        description: "quoted-insert"
+
+      - row: 2
+        col: 2
+        value: "M10"
+        description: "Eat emacs mode (C-c C-e)"
+
+      - row: 2
+        col: 3
+        value: "M11"
+        description: "Eat semi-char mode (C-c C-j)"
+
+      # Row 3: Standard clipboard shortcuts
+      - row: 3
+        col: 0
+        value: "LCTL(KC_C)"
+        description: "Copy"
+
+      - row: 3
+        col: 1
+        value: "LCTL(KC_V)"
+        description: "Paste"
+
+    # Encoders
+    encoders:
+      - encoder: 0
+        description: "Horizontal resize"
+        cw: "M5"
+        ccw: "M6"
+
+      - encoder: 1
+        description: "Vertical resize"
+        cw: "M7"
+        ccw: "M8"
+
+      - encoder: 2
+        description: "Scroll"
+        cw: "KC_WH_U"
+        ccw: "KC_WH_D"
