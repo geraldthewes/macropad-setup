@@ -118,3 +118,7 @@ layers:
 - `Delay(ms)` - Wait for specified milliseconds
 - `Down(keycode)` - Press and hold a key
 - `Up(keycode)` - Release a key
+
+## References
+
+- **QMK Keycodes**: https://docs.qmk.fm/#/keycodes_basic — Official documentation for all basic keycodes (`KC_*`), modifiers (`LCTL`, `LSFT`, `LALT`, `LGUI`), and quantum keycodes (`MO()`, `TG()`, `MACRO()`, etc.)
