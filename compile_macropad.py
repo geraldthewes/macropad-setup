@@ -147,6 +147,16 @@ def format_position(row: int, col: int) -> str:
     return f"{labels[row]}{labels[col]}"
 
 
+def resolve_macro_reference(value: str, macros: list) -> str:
+    """If value is like 'M0', return the macro description; otherwise return value as-is."""
+    if value.startswith('M') and value[1:].isdigit():
+        slot = int(value[1:])
+        for s, _, desc in macros:
+            if s == slot:
+                return desc
+    return value
+
+
 def generate_cheat_sheet(config: dict[str, Any], macros: list, keys: list, encoders: list) -> str:
     """Generate human-readable cheat sheet markdown."""
     lines = []
@@ -155,36 +165,13 @@ def generate_cheat_sheet(config: dict[str, Any], macros: list, keys: list, encod
     lines.append(f"Device ID: `{config['device_id']}`")
     lines.append("")
 
-    # Macros section
-    lines.append("## Macros")
-    lines.append("")
-    lines.append("| Slot | Description | Actions |")
-    lines.append("|------|-------------|---------|")
-
-    for slot, _, description in macros:
-        macro = None
-        for m in config.get('macros', []):
-            if m.get('id') == slot or (slot == 0 and not m.get('id')):
-                macro = m
-                break
-
-        if macro:
-            actions_str = ", ".join(str(a) if isinstance(a, str) else f"{a.get('type')}({a.get('keycode') or a.get('ms')})"
-                                    for a in macro.get('actions', []))
-        else:
-            actions_str = ""
-
-        lines.append(f"| {slot} | {description} | {actions_str} |")
-
-    lines.append("")
-
     # Keys section per layer
     for layer in config['layers']:
         lines.append(f"## Layer {layer['index']}: {layer.get('name', 'Unnamed')}")
         lines.append("")
         lines.append("### Keys")
         lines.append("")
-        lines.append("| Pos | Keycode | Description |")
+        lines.append("| Pos | Role | Description |")
         lines.append("|-----|---------|-------------|")
 
         layer_keys = [k for k in keys]
@@ -200,7 +187,8 @@ def generate_cheat_sheet(config: dict[str, Any], macros: list, keys: list, encod
                 if key_data:
                     key = next((k for k in layer.get('keys', []) if k['row'] == row and k['col'] == col), None)
                     if key:
-                        lines.append(f"| {format_position(row, col)} | `{key['value']}` | {key.get('description', '')} |")
+                        role = resolve_macro_reference(key['value'], macros)
+                        lines.append(f"| {format_position(row, col)} | {role} | {key.get('description', '')} |")
 
         # Encoders for this layer
         if layer.get('encoders'):
@@ -218,8 +206,8 @@ def generate_cheat_sheet(config: dict[str, Any], macros: list, keys: list, encod
                     cw_action = encoder.get('cw', 'N/A')
                     ccw_action = encoder.get('ccw', 'N/A')
                     desc = encoder.get('description', '')
-                    lines.append(f"| {enc_name} | CW | `{cw_action}` | {desc} |")
-                    lines.append(f"| {enc_name} | CCW | `{ccw_action}` | |")
+                    lines.append(f"| {enc_name} | CW | {resolve_macro_reference(cw_action, macros)} | {desc} |")
+                    lines.append(f"| {enc_name} | CCW | {resolve_macro_reference(ccw_action, macros)} | |")
 
         lines.append("")
 
