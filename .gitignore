@@ -1,0 +1,11 @@
+# Generated outputs
+macropad.sh
+cheat-sheet.md
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
