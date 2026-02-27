@@ -141,12 +141,6 @@ def generate_encoders(config: dict[str, Any]) -> list[tuple[str, str, str]]:
     return sorted(encoders, key=lambda x: x[0])
 
 
-def format_position(row: int, col: int) -> str:
-    """Format key position for display."""
-    labels = ['0', '1', '2', '3']
-    return f"{labels[row]}{labels[col]}"
-
-
 def resolve_macro_reference(value: str, macros: list) -> str:
     """If value is like 'M0', return the macro description; otherwise return value as-is."""
     if value.startswith('M') and value[1:].isdigit():
@@ -157,38 +151,176 @@ def resolve_macro_reference(value: str, macros: list) -> str:
     return value
 
 
+def qmk_to_human(value: str) -> str:
+    """Translate a QMK keycode expression to human-readable Emacs-style notation."""
+    value = value.strip()
+
+    # Check for modifier wrappers
+    modifier_map = {
+        'LCTL': 'C-',
+        'LSFT': 'S-',
+        'LALT': 'A-',
+        'LGUI': 'G-',
+    }
+    for mod, prefix in modifier_map.items():
+        if value.startswith(f'{mod}(') and value.endswith(')'):
+            inner = value[len(mod) + 1:-1]
+            return prefix + qmk_to_human(inner)
+
+    # Strip KC_ prefix
+    if value.startswith('KC_'):
+        key = value[3:]
+        special = {'SPC': 'SPC', 'ESC': 'ESC', 'TAB': 'TAB'}
+        if key in special:
+            return special[key]
+        return key.lower()
+
+    return value
+
+
+def _is_key_sequence(text: str) -> bool:
+    """Return True if text looks like a key sequence (e.g. C-x 3, ESC, A-w)."""
+    import re
+    modifier_pattern = re.compile(r'\b[CASG]-')
+    known_special = {'ESC', 'SPC', 'TAB', 'RET'}
+    if modifier_pattern.search(text):
+        return True
+    for word in text.split():
+        if word in known_special:
+            return True
+    return False
+
+
+def extract_key_info(
+    description: str,
+    value: str,
+    config_macros: list[dict[str, Any]],
+) -> tuple[str, str]:
+    """Return (display_name, key_sequence) for a key binding.
+
+    Rules:
+    1. Parens with key sequence  → name before parens, sequence from inside parens
+    2. Parens with non-key info  → name before parens, sequence via qmk_to_human
+    3. No parens, direct keycode → name = description, sequence via qmk_to_human
+    4. No parens, macro ref      → name = description, sequence from macro actions
+    """
+    import re
+
+    paren_match = re.search(r'\(([^)]+)\)$', description.strip())
+    if paren_match:
+        paren_content = paren_match.group(1)
+        name = description[: paren_match.start()].strip()
+        if _is_key_sequence(paren_content):
+            return name, paren_content
+        else:
+            return name, qmk_to_human(value)
+
+    # No parens
+    name = description
+
+    # Macro reference like M0, M10
+    if re.match(r'^M\d+$', value):
+        slot = int(value[1:])
+        macro = next((m for m in config_macros if m.get('id') == slot), None)
+        if macro:
+            taps = []
+            for action in macro.get('actions', []):
+                if isinstance(action, dict) and action.get('type') == 'delay':
+                    continue
+                if isinstance(action, dict) and action.get('type') in ('tap', 'down', 'up'):
+                    taps.append(qmk_to_human(action['keycode']))
+                elif isinstance(action, str):
+                    taps.append(qmk_to_human(action))
+            return name, ' '.join(taps)
+        return name, value
+
+    return name, qmk_to_human(value)
+
+
+def render_grid(grid: list[list[tuple[str, str]]]) -> str:
+    """Render a 4x4 grid of (name, sequence) tuples as a Unicode box-drawing table."""
+    rows = len(grid)
+    cols = max(len(row) for row in grid) if grid else 0
+
+    # Compute column widths: max content width per column (+ 2 for padding)
+    col_widths = []
+    for c in range(cols):
+        width = 0
+        for r in range(rows):
+            if c < len(grid[r]):
+                name, seq = grid[r][c]
+                width = max(width, len(name), len(seq))
+        col_widths.append(width + 2)  # 1 space padding each side
+
+    def hline(left: str, mid: str, right: str, fill: str) -> str:
+        parts = [fill * w for w in col_widths]
+        return left + mid.join(parts) + right
+
+    lines: list[str] = []
+    lines.append(hline('┌', '┬', '┐', '─'))
+
+    for r, row in enumerate(grid):
+        # Line 1: name
+        cells_name = []
+        cells_seq = []
+        for c in range(cols):
+            w = col_widths[c]
+            if c < len(row):
+                name, seq = row[c]
+            else:
+                name, seq = '', ''
+            cells_name.append(f' {name:<{w - 1}}')
+            cells_seq.append(f' {seq:<{w - 1}}')
+
+        lines.append('│' + '│'.join(cells_name) + '│')
+        lines.append('│' + '│'.join(cells_seq) + '│')
+
+        if r < rows - 1:
+            lines.append(hline('├', '┼', '┤', '─'))
+
+    lines.append(hline('└', '┴', '┘', '─'))
+
+    return '```\n' + '\n'.join(lines) + '\n```'
+
+
 def generate_cheat_sheet(config: dict[str, Any], macros: list, keys: list, encoders: list) -> str:
     """Generate human-readable cheat sheet markdown."""
-    lines = []
+    config_macros: list[dict[str, Any]] = config.get('macros', [])
+
+    lines: list[str] = []
     lines.append(f"# Macropad Configuration: {config.get('name', 'Unnamed')}")
     lines.append("")
     lines.append(f"Device ID: `{config['device_id']}`")
     lines.append("")
 
-    # Keys section per layer
     for layer in config['layers']:
         lines.append(f"## Layer {layer['index']}: {layer.get('name', 'Unnamed')}")
         lines.append("")
         lines.append("### Keys")
         lines.append("")
-        lines.append("| Pos | Role | Description |")
-        lines.append("|-----|---------|-------------|")
 
-        layer_keys = [k for k in keys]
+        # Build 4x4 grid
+        layer_key_map: dict[str, dict[str, Any]] = {}
+        for key in layer.get('keys', []):
+            layer_key_map[f"{key['row']},{key['col']}"] = key
+
+        grid: list[list[tuple[str, str]]] = []
         for row in range(4):
+            grid_row: list[tuple[str, str]] = []
             for col in range(4):
-                position = f"{row},{col}"
-                key_data = None
-                for pos, _, desc in layer_keys:
-                    if pos == position:
-                        key_data = (pos, desc)
-                        break
+                key = layer_key_map.get(f"{row},{col}")
+                if key:
+                    name, seq = extract_key_info(
+                        key.get('description', ''),
+                        key['value'],
+                        config_macros,
+                    )
+                    grid_row.append((name, seq))
+                else:
+                    grid_row.append(('', ''))
+            grid.append(grid_row)
 
-                if key_data:
-                    key = next((k for k in layer.get('keys', []) if k['row'] == row and k['col'] == col), None)
-                    if key:
-                        role = resolve_macro_reference(key['value'], macros)
-                        lines.append(f"| {format_position(row, col)} | {role} | {key.get('description', '')} |")
+        lines.append(render_grid(grid))
 
         # Encoders for this layer
         if layer.get('encoders'):

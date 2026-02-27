@@ -1,0 +1,148 @@
+# Macropad configuration matching current macropad.sh
+name: "Emacs Workflow"
+device_id: 5633
+
+# Macro definitions
+macros:
+  - id: 0
+    description: "CTRL-Q then ESC"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_Q)
+      - type: tap
+        keycode: KC_ESC
+
+  - id: 1
+    description: "C-x 3 (split-window-right — vertical split)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_3
+
+  - id: 2
+    description: "C-x 2 (split-window-below — horizontal split)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_2
+
+  - id: 3
+    description: "C-x t 2 (tab-bar new tab)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_X)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_T
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: KC_2
+
+  - id: 10
+    description: "C-c C-e (eat: switch to emacs mode)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_C)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LCTL(KC_E)
+
+  - id: 11
+    description: "C-c C-j (eat: return to semi-char mode)"
+    actions:
+      - type: tap
+        keycode: LCTL(KC_C)
+      - type: delay
+        ms: 20
+      - type: tap
+        keycode: LCTL(KC_J)
+
+# Layer configuration
+layers:
+  - index: 0
+    name: "Main"
+
+    # All keys in a single list (YAML limitation: only one `keys:` per layer)
+    keys:
+      # Row 0: Macro shortcuts and tab management
+      - row: 0
+        col: 0
+        value: "M0"
+        description: "CTRL-Q ESC"
+
+      - row: 0
+        col: 1
+        value: "M1"
+        description: "Split vertical (C-x 3)"
+
+      - row: 0
+        col: 2
+        value: "M2"
+        description: "Split horizontal (C-x 2)"
+
+      - row: 0
+        col: 3
+        value: "M3"
+        description: "New tab (C-x t 2)"
+
+      # Row 1: Emacs text editing
+      - row: 1
+        col: 0
+        value: "LCTL(KC_SPC)"
+        description: "Mark (C-SPC)"
+
+      - row: 1
+        col: 1
+        value: "LCTL(KC_W)"
+        description: "Cut (C-w)"
+
+      - row: 1
+        col: 2
+        value: "LALT(KC_W)"
+        description: "Copy (A-w)"
+
+      - row: 1
+        col: 3
+        value: "LCTL(KC_Y)"
+        description: "Yank (C-y)"
+
+      # Row 2: Standard clipboard
+      - row: 2
+        col: 0
+        value: "LCTL(KC_C)"
+        description: "Copy"
+
+      - row: 2
+        col: 1
+        value: "LCTL(KC_V)"
+        description: "Paste"
+
+      - row: 2
+        col: 2
+        value: "LCTL(LSFT(KC_C))"
+        description: "Shift-copy (visual select)"
+
+      - row: 2
+        col: 3
+        value: "LCTL(LSFT(KC_V))"
+        description: "Shift-paste (visual paste)"
+
+      # Row 3: Eat terminal modes
+      - row: 3
+        col: 0
+        value: "M10"
+        description: "Eat emacs mode (C-c C-e)"
+
+      - row: 3
+        col: 1
+        value: "M11"
+        description: "Eat semi-char mode (C-c C-j)"

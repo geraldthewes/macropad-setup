@@ -17,10 +17,33 @@ Configuration scripts for the DOIO KB16 rev2 macropad (16 keys, 3 encoder knobs)
   - Direction 0 = counter-clockwise (CCW), direction 1 = clockwise (CW)
 - **Macros**: 
 
+## Python environment
+
+Dependencies are managed with **uv** and a `.venv` at the project root.
+
+```bash
+# Set up / sync dependencies
+uv sync
+
+# Run the compiler
+uv run compile_macropad.py <config.yaml>
+
+# Run tests
+uv run pytest test_compile_macropad.py
+
+# Lint / type check
+uv run ruff check compile_macropad.py test_compile_macropad.py
+uv run mypy compile_macropad.py test_compile_macropad.py
+```
+
+The Makefile also uses `.venv/bin/python` directly (`make compile`).
+
 ## Files
 
-- `macropad.sh` — defines all macros, key bindings, and encoder bindings
-- `Makefile` — `make install` to flash settings, `make print` to display current config
+- `macropad.sh` — defines all macros, key bindings, and encoder bindings (generated)
+- `compile_macropad.py` — YAML → `macropad.sh` + `cheat-sheet.md` compiler
+- `test_compile_macropad.py` — unit tests for the compiler
+- `Makefile` — `make install` to flash settings, `make print` to display current config, `make compile` to regenerate outputs
 
 ## vitaly CLI reference
 
